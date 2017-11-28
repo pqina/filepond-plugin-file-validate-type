@@ -1,0 +1,6 @@
+/*
+ * FilePondPluginFileValidateType 1.0.0
+ * Licensed under MIT, https://opensource.org/licenses/MIT
+ * Please visit https://pqina.nl/filepond for details.
+ */
+var plugin$1=({addFilter:e,utils:t})=>{const{Type:i,isString:n,guesstimateMimeType:l,getExtensionFromFilename:T,getFilenameFromURL:E}=t;e("SET_ATTRIBUTE_TO_OPTION_MAP",e=>Object.assign(e,{accept:"acceptedFileTypes"})),e("SET_DEFAULT_OPTIONS",e=>Object.assign(e,{allowFileTypeValidation:[!0,i.BOOLEAN],acceptedFileTypes:[[],i.ARRAY],labelFileTypeNotAllowed:["File is of invalid type",i.STRING]})),e("LOAD_FILE",(e,{query:t})=>new Promise((i,s)=>{if(!t("GET_ALLOW_FILE_TYPE_VALIDATION"))return void i(e);const o=t("GET_ACCEPTED_FILE_TYPES");((e,t)=>{if(0===t.length)return!0;let i="";if(n(e)){const t=E(e),n=T(t);if(!n)return!0;i=l(n)}else i=e.type;return((e,t)=>e.some(e=>/\*$/.test(e)?((e,i)=>(/^[^/]+/.exec(t)||[]).pop()===i.slice(0,-2))(0,e):e===t))(t,i)})(e,o)?i(e):s({status:{main:t("GET_LABEL_FILE_TYPE_NOT_ALLOWED"),sub:t("GET_ACCEPTED_FILE_TYPES").join(", ")}})}))};document&&document.dispatchEvent(new CustomEvent("FilePond:pluginloaded",{detail:plugin$1}));export default plugin$1;

@@ -1,5 +1,5 @@
 /*
- * FilePondPluginFileValidateType 1.0.0
+ * FilePondPluginFileValidateType 1.0.1
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */
@@ -61,22 +61,22 @@ var plugin$1 = ({ addFilter, utils }) => {
     })
   );
 
-  // adds options to options register
-  addFilter('SET_DEFAULT_OPTIONS', options =>
-    Object.assign(options, {
-      // Enable or disable file type validation
-      allowFileTypeValidation: [true, Type.BOOLEAN],
+  // // adds options to options register
+  // addFilter('SET_DEFAULT_OPTIONS', options =>
+  //     Object.assign(options, {
+  //         // Enable or disable file type validation
+  //         allowFileTypeValidation: [true, Type.BOOLEAN],
 
-      // What file types to accept
-      acceptedFileTypes: [[], Type.ARRAY],
-      // - must be comma separated
-      // - mime types: image/png, image/jpeg, image/gif
-      // - extensions: .png, .jpg, .jpeg
-      // - wildcards: image/*
+  //         // What file types to accept
+  //         acceptedFileTypes: [[], Type.ARRAY],
+  //         // - must be comma separated
+  //         // - mime types: image/png, image/jpeg, image/gif
+  //         // - extensions: .png, .jpg, .jpeg
+  //         // - wildcards: image/*
 
-      labelFileTypeNotAllowed: ['File is of invalid type', Type.STRING]
-    })
-  );
+  //         labelFileTypeNotAllowed: ['File is of invalid type', Type.STRING]
+  //     })
+  // );
 
   // called for each file that is loaded
   // right before it is set to the item state
@@ -108,6 +108,24 @@ var plugin$1 = ({ addFilter, utils }) => {
         resolve(file);
       })
   );
+
+  // expose plugin
+  return {
+    // default options
+    options: {
+      // Enable or disable file type validation
+      allowFileTypeValidation: [true, Type.BOOLEAN],
+
+      // What file types to accept
+      acceptedFileTypes: [[], Type.ARRAY],
+      // - must be comma separated
+      // - mime types: image/png, image/jpeg, image/gif
+      // - extensions: .png, .jpg, .jpeg
+      // - wildcards: image/*
+
+      labelFileTypeNotAllowed: ['File is of invalid type', Type.STRING]
+    }
+  };
 
   // receives all items and returns true or false depending on wether the items are valid
   // (as in, is hovered over it)

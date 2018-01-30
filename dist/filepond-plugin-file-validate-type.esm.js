@@ -61,23 +61,6 @@ var plugin$1 = ({ addFilter, utils }) => {
     })
   );
 
-  // // adds options to options register
-  // addFilter('SET_DEFAULT_OPTIONS', options =>
-  //     Object.assign(options, {
-  //         // Enable or disable file type validation
-  //         allowFileTypeValidation: [true, Type.BOOLEAN],
-
-  //         // What file types to accept
-  //         acceptedFileTypes: [[], Type.ARRAY],
-  //         // - must be comma separated
-  //         // - mime types: image/png, image/jpeg, image/gif
-  //         // - extensions: .png, .jpg, .jpeg
-  //         // - wildcards: image/*
-
-  //         labelFileTypeNotAllowed: ['File is of invalid type', Type.STRING]
-  //     })
-  // );
-
   // called for each file that is loaded
   // right before it is set to the item state
   // should return a promise

@@ -1,5 +1,5 @@
 /*
- * FilePondPluginFileValidateType 1.0.1
+ * FilePondPluginFileValidateType 1.0.2
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */
@@ -78,11 +78,24 @@
       });
     });
 
+    // filtering if an item is allowed in hopper
+    addFilter('ALLOW_HOPPER_ITEM', function(file, _ref2) {
+      var query = _ref2.query;
+
+      // if we are not doing file type validation exit
+      if (!query('GET_ALLOW_FILE_TYPE_VALIDATION')) {
+        return true;
+      }
+
+      // we validate the file against the accepted file types
+      return validateFile(file, query('GET_ACCEPTED_FILE_TYPES'));
+    });
+
     // called for each file that is loaded
     // right before it is set to the item state
     // should return a promise
-    addFilter('LOAD_FILE', function(file, _ref2) {
-      var query = _ref2.query;
+    addFilter('LOAD_FILE', function(file, _ref3) {
+      var query = _ref3.query;
       return new Promise(function(resolve, reject) {
         var allowFileTypeValidation = query('GET_ALLOW_FILE_TYPE_VALIDATION');
         if (!allowFileTypeValidation) {

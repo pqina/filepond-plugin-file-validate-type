@@ -1,5 +1,5 @@
 /*
- * FilePondPluginFileValidateType 1.0.1
+ * FilePondPluginFileValidateType 1.0.2
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */
@@ -60,6 +60,17 @@ var plugin$1 = ({ addFilter, utils }) => {
       accept: 'acceptedFileTypes'
     })
   );
+
+  // filtering if an item is allowed in hopper
+  addFilter('ALLOW_HOPPER_ITEM', (file, { query }) => {
+    // if we are not doing file type validation exit
+    if (!query('GET_ALLOW_FILE_TYPE_VALIDATION')) {
+      return true;
+    }
+
+    // we validate the file against the accepted file types
+    return validateFile(file, query('GET_ACCEPTED_FILE_TYPES'));
+  });
 
   // called for each file that is loaded
   // right before it is set to the item state

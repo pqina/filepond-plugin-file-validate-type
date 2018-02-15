@@ -1,14 +1,14 @@
 {
-  "name": "filepond-plugin-file-validate-type",
-  "version": "1.0.1",
-  "description": "File Type Validation Plugin for FilePond",
-  "homepage": "https://pqina.nl/filepond",
-  "main": "dist/filepond-plugin-file-validate-type.js",
-  "browser": "dist/filepond-plugin-file-validate-type.js",
-  "module": "dist/filepond-plugin-file-validate-type.esm.js",
-  "license": "MIT",
-  "author": {
-    "name": "PQINA",
-    "url": "https://pqina.nl"
-  }
+    "name": "filepond-plugin-file-validate-type",
+    "version": "1.0.2",
+    "description": "File Type Validation Plugin for FilePond",
+    "homepage": "https://pqina.nl/filepond",
+    "main": "dist/filepond-plugin-file-validate-type.js",
+    "browser": "dist/filepond-plugin-file-validate-type.js",
+    "module": "dist/filepond-plugin-file-validate-type.esm.js",
+    "license": "MIT",
+    "author": {
+        "name": "PQINA",
+        "url": "https://pqina.nl"
+    }
 }

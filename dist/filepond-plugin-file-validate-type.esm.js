@@ -128,7 +128,7 @@ var plugin$1 = ({ addFilter, utils }) => {
   // });
 };
 
-if (document) {
+if (typeof navigator !== 'undefined' && document) {
   // plugin has loaded
   document.dispatchEvent(
     new CustomEvent('FilePond:pluginloaded', { detail: plugin$1 })

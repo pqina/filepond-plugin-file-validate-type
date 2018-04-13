@@ -1,5 +1,5 @@
 /*
- * FilePondPluginFileValidateType 1.0.2
+ * FilePondPluginFileValidateType 1.0.3
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */

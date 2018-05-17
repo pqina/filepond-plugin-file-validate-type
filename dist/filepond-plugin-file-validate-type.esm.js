@@ -1,5 +1,5 @@
 /*
- * FilePondPluginFileValidateType 1.0.3
+ * FilePondPluginFileValidateType 1.1.0
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */
@@ -8,6 +8,7 @@ var plugin$1 = ({ addFilter, utils }) => {
   const {
     Type,
     isString,
+    replaceInString,
     guesstimateMimeType,
     getExtensionFromFilename,
     getFilenameFromURL
@@ -54,6 +55,11 @@ var plugin$1 = ({ addFilter, utils }) => {
     return isValidMIMEType(acceptedFileTypes, type);
   };
 
+  const applyMimeTypeMap = map => acceptedFileType =>
+    map[acceptedFileType] === null
+      ? false
+      : map[acceptedFileType] || acceptedFileType;
+
   // setup attribute mapping for accept
   addFilter('SET_ATTRIBUTE_TO_OPTION_MAP', map =>
     Object.assign(map, {
@@ -89,10 +95,28 @@ var plugin$1 = ({ addFilter, utils }) => {
 
         // if invalid, exit here
         if (!validateFile(file, acceptedFileTypes)) {
+          const acceptedFileTypesMapped = acceptedFileTypes
+            .map(
+              applyMimeTypeMap(
+                query('GET_FILE_VALIDATE_TYPE_LABEL_EXPECTED_TYPES_MAP')
+              )
+            )
+            .filter(label => label !== false);
+
           reject({
             status: {
               main: query('GET_LABEL_FILE_TYPE_NOT_ALLOWED'),
-              sub: query('GET_ACCEPTED_FILE_TYPES').join(', ')
+              sub: replaceInString(
+                query('GET_FILE_VALIDATE_TYPE_LABEL_EXPECTED_TYPES'),
+                {
+                  allTypes: acceptedFileTypesMapped.join(', '),
+                  allButLastType: acceptedFileTypesMapped
+                    .slice(0, -1)
+                    .join(', '),
+                  lastType:
+                    acceptedFileTypesMapped[acceptedFileTypesMapped.length - 1]
+                }
+              )
             }
           });
           return;
@@ -114,18 +138,22 @@ var plugin$1 = ({ addFilter, utils }) => {
       acceptedFileTypes: [[], Type.ARRAY],
       // - must be comma separated
       // - mime types: image/png, image/jpeg, image/gif
-      // - extensions: .png, .jpg, .jpeg
+      // - extensions: .png, .jpg, .jpeg ( not enabled yet )
       // - wildcards: image/*
 
-      labelFileTypeNotAllowed: ['File is of invalid type', Type.STRING]
+      // label to show when a type is not allowed
+      labelFileTypeNotAllowed: ['File is of invalid type', Type.STRING],
+
+      // nicer label
+      fileValidateTypeLabelExpectedTypes: [
+        'Expects {allButLastType} or {lastType}',
+        Type.STRING
+      ],
+
+      // map mime types to extensions
+      fileValidateTypeLabelExpectedTypesMap: [{}, Type.OBJECT]
     }
   };
-
-  // receives all items and returns true or false depending on wether the items are valid
-  // (as in, is hovered over it)
-  // addFilter('ALLOW_HOPPER_ITEM', ( item, { query }) => {
-  //  TODO: implement, plus throw error in dropzone to indicate item is not valid
-  // });
 };
 
 if (typeof navigator !== 'undefined' && document) {

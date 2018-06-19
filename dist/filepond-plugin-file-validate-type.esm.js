@@ -1,5 +1,5 @@
 /*
- * FilePondPluginFileValidateType 1.1.0
+ * FilePondPluginFileValidateType 1.1.1
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */
@@ -85,8 +85,7 @@ var plugin$1 = ({ addFilter, utils }) => {
     'LOAD_FILE',
     (file, { query }) =>
       new Promise((resolve, reject) => {
-        const allowFileTypeValidation = query('GET_ALLOW_FILE_TYPE_VALIDATION');
-        if (!allowFileTypeValidation) {
+        if (!query('GET_ALLOW_FILE_TYPE_VALIDATION')) {
           resolve(file);
           return;
         }

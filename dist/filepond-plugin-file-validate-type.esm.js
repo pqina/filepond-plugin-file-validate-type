@@ -1,5 +1,5 @@
 /*
- * FilePondPluginFileValidateType 1.1.1
+ * FilePondPluginFileValidateType 1.2.0
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */
@@ -20,7 +20,7 @@ var plugin$1 = ({ addFilter, utils }) => {
     return mimeTypeGroup === wildcardGroup;
   };
 
-  const isValidMIMEType = (acceptedTypes, userInputType) =>
+  const isValidMimeType = (acceptedTypes, userInputType) =>
     acceptedTypes.some(acceptedType => {
       // accepted is wildcard mime type
       if (/\*$/.test(acceptedType)) {
@@ -31,12 +31,7 @@ var plugin$1 = ({ addFilter, utils }) => {
       return acceptedType === userInputType;
     });
 
-  const validateFile = (item, acceptedFileTypes) => {
-    // no types defined, everything is allowed \o/
-    if (acceptedFileTypes.length === 0) {
-      return true;
-    }
-
+  const getItemType = item => {
     // if the item is a url we guess the mime type by the extension
     let type = '';
     if (isString(item)) {
@@ -44,15 +39,40 @@ var plugin$1 = ({ addFilter, utils }) => {
       const extension = getExtensionFromFilename(filename);
       if (extension) {
         type = guesstimateMimeType(extension);
-      } else {
-        return true;
       }
     } else {
       type = item.type;
     }
 
-    // validate file type
-    return isValidMIMEType(acceptedFileTypes, type);
+    return type;
+  };
+
+  const validateFile = (item, acceptedFileTypes, typeDetector) => {
+    // no types defined, everything is allowed \o/
+    if (acceptedFileTypes.length === 0) {
+      return true;
+    }
+
+    // gets the item type
+    const type = getItemType(item);
+
+    // no type detector, test now
+    if (!typeDetector) {
+      return isValidMimeType(acceptedFileTypes, type);
+    }
+
+    // use type detector
+    return new Promise((resolve, reject) => {
+      typeDetector(item, type)
+        .then(detectedType => {
+          if (isValidMimeType(acceptedFileTypes, detectedType)) {
+            resolve();
+          } else {
+            reject();
+          }
+        })
+        .catch(reject);
+    });
   };
 
   const applyMimeTypeMap = map => acceptedFileType =>
@@ -92,8 +112,17 @@ var plugin$1 = ({ addFilter, utils }) => {
 
         const acceptedFileTypes = query('GET_ACCEPTED_FILE_TYPES');
 
+        // custom type detector method
+        const typeDetector = query('GET_FILE_VALIDATE_TYPE_DETECT_TYPE');
+
         // if invalid, exit here
-        if (!validateFile(file, acceptedFileTypes)) {
+        const validationResult = validateFile(
+          file,
+          acceptedFileTypes,
+          typeDetector
+        );
+
+        const handleRejection = () => {
           const acceptedFileTypesMapped = acceptedFileTypes
             .map(
               applyMimeTypeMap(
@@ -118,11 +147,22 @@ var plugin$1 = ({ addFilter, utils }) => {
               )
             }
           });
-          return;
+        };
+
+        // has returned new filename immidiately
+        if (typeof validationResult === 'boolean') {
+          if (!validationResult) {
+            return handleRejection();
+          }
+          resolve(file);
         }
 
-        // all fine
-        resolve(file);
+        // is promise
+        validationResult
+          .then(() => {
+            resolve(file);
+          })
+          .catch(handleRejection);
       })
   );
 
@@ -150,13 +190,18 @@ var plugin$1 = ({ addFilter, utils }) => {
       ],
 
       // map mime types to extensions
-      fileValidateTypeLabelExpectedTypesMap: [{}, Type.OBJECT]
+      fileValidateTypeLabelExpectedTypesMap: [{}, Type.OBJECT],
+
+      // Custom function to detect type of file
+      fileValidateTypeDetectType: [null, Type.FUNCTION]
     }
   };
 };
 
-if (typeof navigator !== 'undefined' && document) {
-  // plugin has loaded
+const isBrowser =
+  typeof window !== 'undefined' && typeof window.document !== 'undefined';
+
+if (isBrowser && document) {
   document.dispatchEvent(
     new CustomEvent('FilePond:pluginloaded', { detail: plugin$1 })
   );

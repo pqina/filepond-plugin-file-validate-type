@@ -1,6 +1,6 @@
 {
     "name": "filepond-plugin-file-validate-type",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "File Type Validation Plugin for FilePond",
     "homepage": "https://pqina.nl/filepond",
     "repository": "pqina/filepond-plugin-file-validate-type",

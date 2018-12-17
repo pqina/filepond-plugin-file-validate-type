@@ -1,8 +1,10 @@
 /*
- * FilePondPluginFileValidateType 1.2.0
+ * FilePondPluginFileValidateType 1.2.1
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */
+
+/* eslint-disable */
 var plugin$1 = ({ addFilter, utils }) => {
   // get quick reference to Type utils
   const {
@@ -154,7 +156,7 @@ var plugin$1 = ({ addFilter, utils }) => {
           if (!validationResult) {
             return handleRejection();
           }
-          resolve(file);
+          return resolve(file);
         }
 
         // is promise

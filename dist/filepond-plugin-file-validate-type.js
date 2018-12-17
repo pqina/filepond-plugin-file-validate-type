@@ -1,8 +1,10 @@
 /*
- * FilePondPluginFileValidateType 1.2.0
+ * FilePondPluginFileValidateType 1.2.1
  * Licensed under MIT, https://opensource.org/licenses/MIT
  * Please visit https://pqina.nl/filepond for details.
  */
+
+/* eslint-disable */
 (function(global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined'
     ? (module.exports = factory())
@@ -181,7 +183,7 @@
           if (!validationResult) {
             return handleRejection();
           }
-          resolve(file);
+          return resolve(file);
         }
 
         // is promise

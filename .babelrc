@@ -1,0 +1,15 @@
+{
+    "presets": [
+        ["@babel/preset-env", {
+            "exclude": ["transform-typeof-symbol"],
+            "modules": false,
+            "targets": {
+                "browsers": [
+                    "last 3 versions",
+                    "edge >= 12",
+                    "ie 11"
+                ]
+            }
+        }]
+    ]
+}

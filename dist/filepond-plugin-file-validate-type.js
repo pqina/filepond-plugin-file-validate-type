@@ -1,5 +1,5 @@
 /*!
- * FilePondPluginFileValidateType 1.2.3
+ * FilePondPluginFileValidateType 1.2.4
  * Licensed under MIT, https://opensource.org/licenses/MIT/
  * Please visit https://pqina.nl/filepond/ for details.
  */
@@ -32,9 +32,7 @@
       wildcard
     ) {
       var mimeTypeGroup = (/^[^/]+/.exec(mimeType) || []).pop(); // image/png -> image
-
       var wildcardGroup = wildcard.slice(0, -2); // image/* -> image
-
       return mimeTypeGroup === wildcardGroup;
     };
 
@@ -46,8 +44,9 @@
         // accepted is wildcard mime type
         if (/\*$/.test(acceptedType)) {
           return mimeTypeMatchesWildCard(userInputType, acceptedType);
-        } // is normal mime type
+        }
 
+        // is normal mime type
         return acceptedType === userInputType;
       });
     };
@@ -55,11 +54,9 @@
     var getItemType = function getItemType(item) {
       // if the item is a url we guess the mime type by the extension
       var type = '';
-
       if (isString(item)) {
         var filename = getFilenameFromURL(item);
         var extension = getExtensionFromFilename(filename);
-
         if (extension) {
           type = guesstimateMimeType(extension);
         }
@@ -78,14 +75,17 @@
       // no types defined, everything is allowed \o/
       if (acceptedFileTypes.length === 0) {
         return true;
-      } // gets the item type
+      }
 
-      var type = getItemType(item); // no type detector, test now
+      // gets the item type
+      var type = getItemType(item);
 
+      // no type detector, test now
       if (!typeDetector) {
         return isValidMimeType(acceptedFileTypes, type);
-      } // use type detector
+      }
 
+      // use type detector
       return new Promise(function(resolve, reject) {
         typeDetector(item, type)
           .then(function(detectedType) {
@@ -105,27 +105,30 @@
           ? false
           : map[acceptedFileType] || acceptedFileType;
       };
-    }; // setup attribute mapping for accept
+    };
 
+    // setup attribute mapping for accept
     addFilter('SET_ATTRIBUTE_TO_OPTION_MAP', function(map) {
       return Object.assign(map, {
         accept: 'acceptedFileTypes'
       });
-    }); // filtering if an item is allowed in hopper
+    });
 
+    // filtering if an item is allowed in hopper
     addFilter('ALLOW_HOPPER_ITEM', function(file, _ref2) {
       var query = _ref2.query;
-
       // if we are not doing file type validation exit
       if (!query('GET_ALLOW_FILE_TYPE_VALIDATION')) {
         return true;
-      } // we validate the file against the accepted file types
+      }
 
+      // we validate the file against the accepted file types
       return validateFile(file, query('GET_ACCEPTED_FILE_TYPES'));
-    }); // called for each file that is loaded
+    });
+
+    // called for each file that is loaded
     // right before it is set to the item state
     // should return a promise
-
     addFilter('LOAD_FILE', function(file, _ref3) {
       var query = _ref3.query;
       return new Promise(function(resolve, reject) {
@@ -134,10 +137,12 @@
           return;
         }
 
-        var acceptedFileTypes = query('GET_ACCEPTED_FILE_TYPES'); // custom type detector method
+        var acceptedFileTypes = query('GET_ACCEPTED_FILE_TYPES');
 
-        var typeDetector = query('GET_FILE_VALIDATE_TYPE_DETECT_TYPE'); // if invalid, exit here
+        // custom type detector method
+        var typeDetector = query('GET_FILE_VALIDATE_TYPE_DETECT_TYPE');
 
+        // if invalid, exit here
         var validationResult = validateFile(
           file,
           acceptedFileTypes,
@@ -154,6 +159,7 @@
             .filter(function(label) {
               return label !== false;
             });
+
           reject({
             status: {
               main: query('GET_LABEL_FILE_TYPE_NOT_ALLOWED'),
@@ -170,58 +176,63 @@
               )
             }
           });
-        }; // has returned new filename immidiately
+        };
 
+        // has returned new filename immidiately
         if (typeof validationResult === 'boolean') {
           if (!validationResult) {
             return handleRejection();
           }
-
           return resolve(file);
-        } // is promise
+        }
 
+        // is promise
         validationResult
           .then(function() {
             resolve(file);
           })
           .catch(handleRejection);
       });
-    }); // expose plugin
+    });
 
+    // expose plugin
     return {
       // default options
       options: {
         // Enable or disable file type validation
         allowFileTypeValidation: [true, Type.BOOLEAN],
+
         // What file types to accept
         acceptedFileTypes: [[], Type.ARRAY],
         // - must be comma separated
         // - mime types: image/png, image/jpeg, image/gif
         // - extensions: .png, .jpg, .jpeg ( not enabled yet )
         // - wildcards: image/*
+
         // label to show when a type is not allowed
         labelFileTypeNotAllowed: ['File is of invalid type', Type.STRING],
+
         // nicer label
         fileValidateTypeLabelExpectedTypes: [
           'Expects {allButLastType} or {lastType}',
           Type.STRING
         ],
+
         // map mime types to extensions
         fileValidateTypeLabelExpectedTypesMap: [{}, Type.OBJECT],
+
         // Custom function to detect type of file
         fileValidateTypeDetectType: [null, Type.FUNCTION]
       }
     };
-  }; // fire pluginloaded event if running in browser, this allows registering the plugin when using async script tags
+  };
 
+  // fire pluginloaded event if running in browser, this allows registering the plugin when using async script tags
   var isBrowser =
     typeof window !== 'undefined' && typeof window.document !== 'undefined';
-
   if (isBrowser) {
     document.dispatchEvent(
-      new CustomEvent('FilePond:pluginloaded', {
-        detail: plugin
-      })
+      new CustomEvent('FilePond:pluginloaded', { detail: plugin })
     );
   }
 

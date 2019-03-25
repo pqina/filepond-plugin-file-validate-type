@@ -1,6 +1,6 @@
 {
     "name": "filepond-plugin-file-validate-type",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "File Type Validation Plugin for FilePond",
     "license": "MIT",
     "author": {
@@ -12,6 +12,12 @@
     "main": "dist/filepond-plugin-file-validate-type.js",
     "browser": "dist/filepond-plugin-file-validate-type.js",
     "module": "dist/filepond-plugin-file-validate-type.esm.js",
+    "browserslist": [
+        "last 1 version and not Explorer 10",
+        "Explorer 11",
+        "iOS >= 9",
+        "Android >= 4.4"
+    ],
     "files": [
         "dist"
     ],

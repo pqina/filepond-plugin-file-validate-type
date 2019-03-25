@@ -1,15 +1,15 @@
 {
+    "retainLines": true,
     "presets": [
         ["@babel/preset-env", {
             "exclude": ["transform-typeof-symbol"],
-            "modules": false,
-            "targets": {
-                "browsers": [
-                    "last 3 versions",
-                    "edge >= 12",
-                    "ie 11"
-                ]
-            }
+            "modules": false
+        }]
+    ],
+    "plugins": [
+        ["@babel/plugin-proposal-object-rest-spread", {
+            "loose": true, 
+            "useBuiltIns": true
         }]
     ]
 }

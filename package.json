@@ -1,6 +1,6 @@
 {
     "name": "filepond-plugin-file-validate-type",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "description": "File Type Validation Plugin for FilePond",
     "license": "MIT",
     "author": {

@@ -123,15 +123,17 @@ const plugin = ({ addFilter, utils }) => {
                         )
                     ).filter(label => label !== false);
 
+                    const acceptedFileTypesMapped_unique = [...new Set(acceptedFileTypesMapped)];
+
                     reject({
                         status: {
                             main: query('GET_LABEL_FILE_TYPE_NOT_ALLOWED'),
                             sub: replaceInString(
                                 query('GET_FILE_VALIDATE_TYPE_LABEL_EXPECTED_TYPES'),
                                 {
-                                    allTypes: [...new Set(acceptedFileTypesMapped)].join(', '),
-                                    allButLastType: acceptedFileTypesMapped.slice(0, -1).join(', '),
-                                    lastType: acceptedFileTypesMapped[acceptedFileTypesMapped.length-1],
+                                    allTypes: acceptedFileTypesMapped_unique.join(', '),
+                                    allButLastType: acceptedFileTypesMapped_unique.slice(0, -1).join(', '),
+                                    lastType: acceptedFileTypesMapped_unique[acceptedFileTypesMapped.length-1],
                                 }
                             )
                         }

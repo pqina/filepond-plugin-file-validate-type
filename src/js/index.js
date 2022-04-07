@@ -129,7 +129,7 @@ const plugin = ({ addFilter, utils }) => {
                             sub: replaceInString(
                                 query('GET_FILE_VALIDATE_TYPE_LABEL_EXPECTED_TYPES'),
                                 {
-                                    allTypes: [...new Set(acceptedFileTypesMapped.join(', '))],
+                                    allTypes: [...new Set(acceptedFileTypesMapped)].join(', '),
                                     allButLastType: acceptedFileTypesMapped.slice(0, -1).join(', '),
                                     lastType: acceptedFileTypesMapped[acceptedFileTypesMapped.length-1],
                                 }

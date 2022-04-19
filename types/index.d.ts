@@ -14,6 +14,6 @@ declare module "filepond" {
     /** Allows mapping the file type to a more visually appealing label, { 'image/jpeg': '.jpg' } will show .jpg in the expected types label. Set to null to hide a type from the label. */
     fileValidateTypeLabelExpectedTypesMap?: object;
     /** A function that receives a file and the type detected by FilePond, should return a Promise, resolve with detected file type, reject if can’t detect. */
-    fileValidateTypeDetectType?: (file: File, type: string) => Promise<string>;
+    fileValidateTypeDetectType?: (file: globalThis.File, type: string) => Promise<string>;
   }
 }

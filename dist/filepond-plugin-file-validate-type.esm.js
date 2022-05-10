@@ -1,5 +1,5 @@
 /*!
- * FilePondPluginFileValidateType 1.2.7
+ * FilePondPluginFileValidateType 1.2.8
  * Licensed under MIT, https://opensource.org/licenses/MIT/
  * Please visit https://pqina.nl/filepond/ for details.
  */
@@ -134,18 +134,26 @@ const plugin = ({ addFilter, utils }) => {
             )
             .filter(label => label !== false);
 
+          const acceptedFileTypesMapped_unique = acceptedFileTypesMapped.filter(
+            function(item, index) {
+              return acceptedFileTypesMapped.indexOf(item) === index;
+            }
+          );
+
           reject({
             status: {
               main: query('GET_LABEL_FILE_TYPE_NOT_ALLOWED'),
               sub: replaceInString(
                 query('GET_FILE_VALIDATE_TYPE_LABEL_EXPECTED_TYPES'),
                 {
-                  allTypes: acceptedFileTypesMapped.join(', '),
-                  allButLastType: acceptedFileTypesMapped
+                  allTypes: acceptedFileTypesMapped_unique.join(', '),
+                  allButLastType: acceptedFileTypesMapped_unique
                     .slice(0, -1)
                     .join(', '),
                   lastType:
-                    acceptedFileTypesMapped[acceptedFileTypesMapped.length - 1]
+                    acceptedFileTypesMapped_unique[
+                      acceptedFileTypesMapped.length - 1
+                    ]
                 }
               )
             }

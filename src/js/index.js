@@ -123,7 +123,7 @@ const plugin = ({ addFilter, utils }) => {
                         )
                     ).filter(label => label !== false);
 
-                    const acceptedFileTypesMapped_unique = [...new Set(acceptedFileTypesMapped)];
+                    const acceptedFileTypesMapped_unique = acceptedFileTypesMapped.filter(function(item, index) {return acceptedFileTypesMapped.indexOf(item) === index});  
 
                     reject({
                         status: {

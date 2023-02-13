@@ -133,7 +133,7 @@ const plugin = ({ addFilter, utils }) => {
                                 {
                                     allTypes: acceptedFileTypesMapped_unique.join(', '),
                                     allButLastType: acceptedFileTypesMapped_unique.slice(0, -1).join(', '),
-                                    lastType: acceptedFileTypesMapped_unique[acceptedFileTypesMapped.length-1],
+                                    lastType: acceptedFileTypesMapped_unique[acceptedFileTypesMapped_unique.length-1],
                                 }
                             )
                         }

@@ -23,7 +23,7 @@ const plugin = ({ addFilter, utils }) => {
             }
 
             // is normal mime type
-            return acceptedType === userInputType;
+            return acceptedType.toLowerCase() === userInputType.toLowerCase();
         });
 
     const getItemType = (item) => {

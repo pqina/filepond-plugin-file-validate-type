@@ -15,16 +15,20 @@ const plugin = ({ addFilter, utils }) => {
         return mimeTypeGroup === wildcardGroup;
     };
 
-    const isValidMimeType = (acceptedTypes, userInputType) =>
+    const isValidMimeType = (acceptedTypes, userInputType) => {
+
+        // MIME is case insesitive, so we make sure to compare lower case only
+        const userInputTypeLowerCased = userInputType.toLowerCase();
         acceptedTypes.some(acceptedType => {
             // accepted is wildcard mime type
             if (/\*$/.test(acceptedType)) {
-                return mimeTypeMatchesWildCard(userInputType, acceptedType);
+                return mimeTypeMatchesWildCard(userInputTypeLowerCased, acceptedType);
             }
 
             // is normal mime type
-            return acceptedType.toLowerCase() === userInputType.toLowerCase();
+            return acceptedType.toLowerCase() === userInputTypeLowerCased;
         });
+    }
 
     const getItemType = (item) => {
 

@@ -6,7 +6,7 @@ const plugin = ({ addFilter, utils }) => {
         replaceInString,
         guesstimateMimeType,
         getExtensionFromFilename,
-        getFilenameFromURL
+        getFilenameFromURL,
     } = utils;
 
     const mimeTypeMatchesWildCard = (mimeType, wildcard) => {
@@ -26,8 +26,7 @@ const plugin = ({ addFilter, utils }) => {
             return acceptedType === userInputType;
         });
 
-    const getItemType = (item) => {
-
+    const getItemType = item => {
         // if the item is a url we guess the mime type by the extension
         let type = '';
         if (isString(item)) {
@@ -41,10 +40,9 @@ const plugin = ({ addFilter, utils }) => {
         }
 
         return type;
-    }
+    };
 
     const validateFile = (item, acceptedFileTypes, typeDetector) => {
-
         // no types defined, everything is allowed \o/
         if (acceptedFileTypes.length === 0) {
             return true;
@@ -52,34 +50,33 @@ const plugin = ({ addFilter, utils }) => {
 
         // gets the item type
         const type = getItemType(item);
-        
+
         // no type detector, test now
         if (!typeDetector) {
-            return isValidMimeType(acceptedFileTypes, type)
+            return isValidMimeType(acceptedFileTypes, type);
         }
 
         // use type detector
         return new Promise((resolve, reject) => {
             typeDetector(item, type)
-                .then((detectedType) => {
+                .then(detectedType => {
                     if (isValidMimeType(acceptedFileTypes, detectedType)) {
                         resolve();
-                    }
-                    else {
+                    } else {
                         reject();
                     }
                 })
                 .catch(reject);
         });
-
     };
 
-    const applyMimeTypeMap = (map) => (acceptedFileType) => map[acceptedFileType] === null ? false : map[acceptedFileType] || acceptedFileType;
+    const applyMimeTypeMap = map => acceptedFileType =>
+        map[acceptedFileType] === null ? false : map[acceptedFileType] || acceptedFileType;
 
     // setup attribute mapping for accept
     addFilter('SET_ATTRIBUTE_TO_OPTION_MAP', map =>
         Object.assign(map, {
-            accept: 'acceptedFileTypes'
+            accept: 'acceptedFileTypes',
         })
     );
 
@@ -101,29 +98,31 @@ const plugin = ({ addFilter, utils }) => {
         'LOAD_FILE',
         (file, { query }) =>
             new Promise((resolve, reject) => {
-                
                 if (!query('GET_ALLOW_FILE_TYPE_VALIDATION')) {
                     resolve(file);
                     return;
                 }
 
                 const acceptedFileTypes = query('GET_ACCEPTED_FILE_TYPES');
-                
+
                 // custom type detector method
                 const typeDetector = query('GET_FILE_VALIDATE_TYPE_DETECT_TYPE');
-                
+
                 // if invalid, exit here
                 const validationResult = validateFile(file, acceptedFileTypes, typeDetector);
 
                 const handleRejection = () => {
-
-                    const acceptedFileTypesMapped = acceptedFileTypes.map(
-                        applyMimeTypeMap(
-                            query('GET_FILE_VALIDATE_TYPE_LABEL_EXPECTED_TYPES_MAP')
+                    const acceptedFileTypesMapped = acceptedFileTypes
+                        .map(
+                            applyMimeTypeMap(
+                                query('GET_FILE_VALIDATE_TYPE_LABEL_EXPECTED_TYPES_MAP')
+                            )
                         )
-                    ).filter(label => label !== false);
+                        .filter(label => label !== false);
 
-                    const acceptedFileTypesMapped_unique = acceptedFileTypesMapped.filter(function(item, index) {return acceptedFileTypesMapped.indexOf(item) === index});  
+                    const acceptedFileTypesMappedUnique = acceptedFileTypesMapped.filter(
+                        (item, index) => acceptedFileTypesMapped.indexOf(item) === index
+                    );
 
                     reject({
                         status: {
@@ -131,15 +130,19 @@ const plugin = ({ addFilter, utils }) => {
                             sub: replaceInString(
                                 query('GET_FILE_VALIDATE_TYPE_LABEL_EXPECTED_TYPES'),
                                 {
-                                    allTypes: acceptedFileTypesMapped_unique.join(', '),
-                                    allButLastType: acceptedFileTypesMapped_unique.slice(0, -1).join(', '),
-                                    lastType: acceptedFileTypesMapped_unique[acceptedFileTypesMapped_unique.length-1],
+                                    allTypes: acceptedFileTypesMappedUnique.join(', '),
+                                    allButLastType: acceptedFileTypesMappedUnique
+                                        .slice(0, -1)
+                                        .join(', '),
+                                    lastType:
+                                        acceptedFileTypesMappedUnique[
+                                            acceptedFileTypesMappedUnique.length - 1
+                                        ],
                                 }
-                            )
-                        }
+                            ),
+                        },
                     });
-                    
-                }
+                };
 
                 // has returned new filename immidiately
                 if (typeof validationResult === 'boolean') {
@@ -148,7 +151,7 @@ const plugin = ({ addFilter, utils }) => {
                     }
                     return resolve(file);
                 }
-                
+
                 // is promise
                 validationResult
                     .then(() => {
@@ -176,15 +179,17 @@ const plugin = ({ addFilter, utils }) => {
             labelFileTypeNotAllowed: ['File is of invalid type', Type.STRING],
 
             // nicer label
-            fileValidateTypeLabelExpectedTypes: ['Expects {allButLastType} or {lastType}', Type.STRING],
+            fileValidateTypeLabelExpectedTypes: [
+                'Expects {allButLastType} or {lastType}',
+                Type.STRING,
+            ],
 
             // map mime types to extensions
             fileValidateTypeLabelExpectedTypesMap: [{}, Type.OBJECT],
 
             // Custom function to detect type of file
-            fileValidateTypeDetectType:[null, Type.FUNCTION],
-
-        }
+            fileValidateTypeDetectType: [null, Type.FUNCTION],
+        },
     };
 };
 
